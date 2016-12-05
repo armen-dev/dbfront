@@ -7,8 +7,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": ">=5.6",
-        "ext-sphinx": "*"
+        "php": ">=5.6"
     },
     "version": "1.0.0"
 }
