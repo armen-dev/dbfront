@@ -1,0 +1,14 @@
+{
+    "config": {
+        "bin-dir": "bin"
+    },
+    "description": "DB Front Test",
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "php": ">=5.6",
+        "ext-sphinx": "*"
+    },
+    "version": "1.0.0"
+}
