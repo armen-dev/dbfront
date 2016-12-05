@@ -1,5 +1,7 @@
 <?php
 
+require "sphinxapi.php";
+
 $server = getenv(strtoupper(getenv("SPHINX_SERVICE_NAME"))."_SERVICE_HOST");
 
 $s = new SphinxClient();
