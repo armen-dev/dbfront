@@ -1,5 +1,6 @@
 <?php
 
-$server = getenv('INDEXER1_SERVICE_HOST');
+$rt = gethostbyname(getenv('RT_INDEX_CLUSTER'));
+$dist = gethostbyname(getenv('DIST_INDEX_CLUSTER'));
 
-var_dump($_ENV, $server);
+var_dump($_ENV, $rt, $dist);
