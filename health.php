@@ -3,7 +3,7 @@
 require 'sphinxapi.php';
 
 try {
-    $server = getenv('INDEXER1_SERVICE_HOST');
+    $server = getenv('RT_INDEX_CLUSTER');
 
     $s = new SphinxClient();
     $s->setServer($server, 9312);
