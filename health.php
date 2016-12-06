@@ -6,7 +6,7 @@ try {
     $server = getenv('INDEXER1_SERVICE_HOST');
 
     $s = new SphinxClient();
-    $s->setServer($server, 6712);
+    $s->setServer($server, 9312);
 
     $result = $s->status();
 } catch (\Exception $e) {
