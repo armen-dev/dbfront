@@ -1,6 +1,6 @@
 <?php
 
-require 'sphinxapi.php';
+require_once implode(DIRECTORY_SEPARATOR, [dirname(__DIR__), 'lib', 'sphinxapi.php']);
 
 try {
     $server = getenv('RT_INDEX_CLUSTER');
