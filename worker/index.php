@@ -17,25 +17,35 @@ if (!is_array($payload)) {
 
 // $tip = $payload['tip'];
 // $id = hexdec(substr(hash('sha256', $tip), 0, 16));
-$sid = $payload['sid'];
-$id = hexdec(substr($sid, 0, 15));
 
 $hash = new Flexihash();
 $hash->addTargets($rts);
-$shards = $hash->lookupList($sid, 2);
 
-foreach ($shards as $host) {
-    $conn = new Connection();
-    $conn->setParams(['host' => $host, 'port' => 9306]);
+$partitions = [];
+foreach ($rts as $host) {
+    $partitions[$host] = [];
+}
 
+foreach ($payload as $eno) {
+    $sid = $payload['sid'];
+    $replicas = $hash->lookupList($sid, 2);
+    $id = hexdec(substr($sid, 0, 15));
+
+    foreach ($replicas as $replica) {
+        $partitions[$replica][] = ['id' => $id, 'eno' => json_encode($eno)];
+    }
+}
+
+foreach ($partitions as $host => $records) {
     try {
-        $q = SphinxQL::create($conn)
-            ->insert()
-            ->into('eno')
-            ->value('id', $id)
-            ->value('eno', $rawPayload);
+        $conn = new Connection();
+        $conn->setParams(['host' => $host, 'port' => 9306]);
 
-        $q->execute();
+        $q = SphinxQL::create($conn);
+        foreach ($records as $record) {
+            $q->insert()->into('eno')->set($record)->enqueue();
+        }
+        $q->executeBatch();
     } catch (\Exception $e) {
         header('HTTP/1.1 503 Service Unavailable');
         die($e->getMessage());
