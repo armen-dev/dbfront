@@ -12,7 +12,7 @@ $payload = json_decode($rawPayload, TRUE);
 
 if (!is_array($payload)) {
     header('HTTP/1.1 503 Service Unavailable');
-    die('503 Service Unavailable');
+    die('503 Service Unavailable : ' . $rawPayload);
 }
 
 // $tip = $payload['tip'];
@@ -41,11 +41,16 @@ foreach ($partitions as $host => $records) {
         $conn = new Connection();
         $conn->setParams(['host' => $host, 'port' => 9306]);
 
-        $q = SphinxQL::create($conn);
+        $q = SphinxQL::create($conn)
+            ->insert()
+            ->into('eno')
+            ->columns('id', 'eno');
+
         foreach ($records as $record) {
-            $q->insert()->into('eno')->set($record)->enqueue();
+            $q->values($record['id'], $record['eno']);
         }
-        $q->executeBatch();
+
+        $q->execute();
     } catch (\Exception $e) {
         header('HTTP/1.1 503 Service Unavailable');
         die($e->getMessage());
