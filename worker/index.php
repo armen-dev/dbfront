@@ -30,7 +30,6 @@ foreach ($shards as $host) {
         ->insert()
         ->into('eno')
         ->value('id', $id)
-        ->value('dummy', NULL)
         ->value('eno', $rawPayload);
 
     $result = $q->execute();
