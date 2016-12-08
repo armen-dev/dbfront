@@ -1,6 +1,6 @@
 <?php
 
-use Flexihash;
+use Flexihash\Flexihash;
 use Foolz\SphinxQL\Connection;
 use Foolz\SphinxQL\SphinxQL;
 
