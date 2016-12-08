@@ -47,7 +47,7 @@ foreach ($partitions as $host => $records) {
             ->columns('id', 'eno');
 
         foreach ($records as $record) {
-            $q->values($record['id'], $record['eno']);
+            $q = $q->values($record['id'], $record['eno']);
         }
 
         $q->execute();
