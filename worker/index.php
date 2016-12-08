@@ -16,7 +16,7 @@ if (!is_array($payload)) {
 }
 
 $tip = $payload['tip'];
-$id = hexdec(substr($tip, 0, 16));
+$id = hexdec(substr(hash('sha256', $tip), 0, 16));
 
 $hash = new Flexihash();
 $hash->addTargets($rts);
