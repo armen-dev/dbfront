@@ -26,13 +26,16 @@ foreach ($shards as $host) {
     $conn = new Connection();
     $conn->setParams(['host' => $host, 'port' => 9306]);
 
-    $q = SphinxQL::create($conn)
-        ->insert()
-        ->into('eno')
-        ->value('id', $id)
-        ->value('eno', $rawPayload);
+    try {
+        $q = SphinxQL::create($conn)
+            ->insert()
+            ->into('eno')
+            ->value('id', $id)
+            ->value('eno', $rawPayload);
 
-    $result = $q->execute();
-
-    var_dump($tip, $id, $host, $result);
+        $q->execute();
+    } catch (\Exception $e) {
+        header('HTTP/1.1 503 Service Unavailable');
+        die($e->getMessage());
+    }
 }
