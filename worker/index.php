@@ -9,7 +9,14 @@ require_once implode(DIRECTORY_SEPARATOR, [dirname(__DIR__), 'vendor', 'autoload
 $rts = gethostbynamel(getenv('RT_INDEX_CLUSTER'));
 $rawPayload = file_get_contents('php://input');
 $payload = json_decode($rawPayload, TRUE);
+
+if (!is_array($payload)) {
+    header('HTTP/1.1 503 Service Unavailable');
+    die('503 Service Unavailable');
+}
+
 $tip = $payload['tip'];
+$id = hexdec(substr($tip, 0, 16));
 
 $hash = new Flexihash();
 $hash->addTargets($rts);
@@ -28,5 +35,5 @@ foreach ($shards as $host) {
 
     $result = $q->execute();
 
-    var_dump($host, $result);
+    var_dump($tip, $id, $host, $result);
 }
