@@ -15,12 +15,14 @@ if (!is_array($payload)) {
     die('503 Service Unavailable');
 }
 
-$tip = $payload['tip'];
-$id = hexdec(substr(hash('sha256', $tip), 0, 16));
+// $tip = $payload['tip'];
+// $id = hexdec(substr(hash('sha256', $tip), 0, 16));
+$sid = $payload['sid'];
+$id = hexdec(substr($sid, 0, 16));
 
 $hash = new Flexihash();
 $hash->addTargets($rts);
-$shards = $hash->lookupList($tip, 2);
+$shards = $hash->lookupList($sid, 2);
 
 foreach ($shards as $host) {
     $conn = new Connection();
