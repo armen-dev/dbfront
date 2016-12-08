@@ -27,7 +27,7 @@ foreach ($rts as $host) {
 }
 
 foreach ($payload as $eno) {
-    $sid = $payload['sid'];
+    $sid = $eno['sid'];
     $replicas = $hash->lookupList($sid, 2);
     $id = hexdec(substr($sid, 0, 15));
 
