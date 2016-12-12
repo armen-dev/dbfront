@@ -1,22 +1,32 @@
 <?php
 
-require_once implode(DIRECTORY_SEPARATOR, [dirname(__DIR__), 'lib', 'sphinxapi.php']);
+use Foolz\SphinxQL\Connection;
+use Foolz\SphinxQL\Helper;
 
-try {
-    $server = getenv('RT_INDEX_CLUSTER');
+require_once implode(DIRECTORY_SEPARATOR, [dirname(__DIR__), 'vendor', 'autoload.php']);
 
-    $s = new SphinxClient();
-    $s->setServer($server, 9312);
+$result = false;
+$alive = [];
+$rts = gethostbynamel(getenv('RT_INDEX_CLUSTER'));
 
-    $result = $s->status();
-} catch (\Exception $e) {
-    $result = false;
+foreach ($rts as $host) {
+    try {
+        $conn = new Connection();
+        $conn->setParams(['host' => $host, 'port' => 9306]);
+        Helper::create($conn)->showStatus();
+        $result = true;
+    } catch (\Exception $e) {
+        $result = false;
+    }
+
+    if ($result === true) {
+        $alive[] = $host;
+    }
 }
 
-// Check connection
-if ($result == false) {
+if (count($alive) < 2) {
     header('HTTP/1.1 503 Service Unavailable');
-    die('Connection failed');
+    die(sprintf('Connection failed. (number of alive replicas: %d)', count($alive)));
 }
 
-echo 'OK';
+echo 'Alive: '.implode(', ', $alive);
