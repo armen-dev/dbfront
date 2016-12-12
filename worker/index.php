@@ -52,7 +52,6 @@ foreach ($partitions as $host => $records) {
 
         $q->execute();
     } catch (\Exception $e) {
-        header('HTTP/1.1 503 Service Unavailable');
-        die($e->getMessage());
+        trigger_error($e->getMessage(), E_USER_NOTICE);
     }
 }
