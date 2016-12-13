@@ -52,10 +52,10 @@ foreach ($partitions as $host => $records) {
         $q = SphinxQL::create($conn)
             ->insert()
             ->into('eno')
-            ->columns('id', 'eno');
+            ->columns('id', 'sid', 'tip', 'type', 'fields');
 
         foreach ($records as $record) {
-            $q = $q->values($record['id'], $record['eno']);
+            $q = $q->values($record['id'], $record['sid'], $record['tip'], $record['type'], $record['fields']);
         }
 
         $q->execute();
