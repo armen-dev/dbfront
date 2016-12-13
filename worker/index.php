@@ -30,17 +30,12 @@ foreach ($payload as $eno) {
     $sid = $eno['sid'];
     $tip = $eno['tip'];
     $type = $eno['source']['type'];
-    $fields = [];
-
-    foreach ($eno['source']['field'] as $f) {
-        $fields[$f['tip']] = isset($f['value']) ? $f['value'] : $f['i18n'];
-    }
 
     $replicas = $hash->lookupList($sid, 2);
     $id = hexdec(substr($sid, 0, 15));
 
     foreach ($replicas as $replica) {
-        $partitions[$replica][] = ['id' => $id, 'sid' => $sid, 'tip' => $tip, 'type' => $type, 'fields' => json_encode($fields)];
+        $partitions[$replica][] = ['id' => $id, 'sid' => $sid, 'tip' => $tip, 'type' => $type];
     }
 }
 
@@ -52,10 +47,10 @@ foreach ($partitions as $host => $records) {
         $q = SphinxQL::create($conn)
             ->insert()
             ->into('eno')
-            ->columns('id', 'sid', 'tip', 'type', 'fields');
+            ->columns('id', 'sid', 'tip', 'type');
 
         foreach ($records as $record) {
-            $q = $q->values($record['id'], $record['sid'], $record['tip'], $record['type'], $record['fields']);
+            $q = $q->values($record['id'], $record['sid'], $record['tip'], $record['type']);
         }
 
         $q->execute();
