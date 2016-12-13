@@ -28,11 +28,19 @@ foreach ($rts as $host) {
 
 foreach ($payload as $eno) {
     $sid = $eno['sid'];
+    $tip = $eno['tip'];
+    $type = $eno['source']['type'];
+    $fields = [];
+
+    foreach ($eno['source']['fields'] as $f) {
+        $fields[$f['tip']] = isset($f['value']) ? $f['value'] : $f['i18n'];
+    }
+
     $replicas = $hash->lookupList($sid, 2);
     $id = hexdec(substr($sid, 0, 15));
 
     foreach ($replicas as $replica) {
-        $partitions[$replica][] = ['id' => $id, 'eno' => json_encode($eno)];
+        $partitions[$replica][] = ['id' => $id, 'sid' => $sid, 'tip' => $tip, 'type' => $type, 'fields' => json_encode($fields)];
     }
 }
 
