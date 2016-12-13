@@ -32,7 +32,7 @@ foreach ($payload as $eno) {
     $type = $eno['source']['type'];
     $fields = [];
 
-    foreach ($eno['source']['fields'] as $f) {
+    foreach ($eno['source']['field'] as $f) {
         $fields[$f['tip']] = isset($f['value']) ? $f['value'] : $f['i18n'];
     }
 
